@@ -4,7 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .calculator {
+            border: 1px solid #000; /* Black border around the calculator */
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        #display {
+            width: 100%;
+            padding: 20px;
+            font-size: 2em;
+            text-align: right;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            border-bottom: 2px solid #000; /* Black border below the display */
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-top: 2px solid #000; /* Black border above the buttons */
+        }
+
+        button {
+            padding: 20px;
+            font-size: 1.5em;
+            border: 1px solid #000; /* Black border for buttons */
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        button:active {
+            background-color: #ddd;
+        }
+
+        button.operator {
+            background-color: #f0a500;
+            color: #fff;
+        }
+
+        button.operator:active {
+            background-color: #d89b00;
+        }
+
+        button.equals {
+            grid-column: span 2;
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        button.equals:active {
+            background-color: #388e3c;
+        }
+
+        button.clear {
+            grid-column: span 2;
+            background-color: #2196F3; /* Blue color */
+            color: #fff;
+        }
+
+        button.clear:active {
+            background-color: #1976D2; /* Darker blue color */
+        }
+    </style>
 </head>
 <body>
     <div class="calculator">
@@ -29,6 +103,45 @@
             <button class="btn clear">C</button>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const display = document.getElementById('display');
+            const buttons = document.querySelectorAll('.btn');
+            
+            let currentInput = '';
+            let operator = '';
+            let previousInput = '';
+
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const value = button.getAttribute('data-value');
+                    
+                    if (button.classList.contains('clear')) {
+                        currentInput = '';
+                        operator = '';
+                        previousInput = '';
+                        display.value = '';
+                    } else if (button.classList.contains('equals')) {
+                        if (currentInput && previousInput && operator) {
+                            display.value = eval(`${previousInput} ${operator} ${currentInput}`);
+                            currentInput = display.value;
+                            previousInput = '';
+                            operator = '';
+                        }
+                    } else if (button.classList.contains('operator')) {
+                        if (currentInput) {
+                            previousInput = currentInput;
+                            operator = value;
+                            currentInput = '';
+                        }
+                    } else {
+                        currentInput += value;
+                        display.value = currentInput;
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
